@@ -1,11 +1,12 @@
-import fitz
+from PyPDF2 import PdfReader
+import io
 
-def extract_text(pdf_path):
-    doc = fitz.open(pdf_path)
+def extract_text(file_bytes):
+    reader = PdfReader(io.BytesIO(file_bytes))
 
     text = ""
 
-    for page in doc:
-        text += page.get_text()
+    for page in reader.pages:
+        text += page.extract_text()
 
     return text

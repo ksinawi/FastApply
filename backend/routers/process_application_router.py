@@ -1,6 +1,6 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
+from fastapi import APIRouter, UploadFile, File, Form
 
+from services.resume_parser import extract_text
 from services.resume_analyzer import analyze_resume
 from services.job_analyzer import analyze_job
 from services.matcher import match_resume_to_job
@@ -8,19 +8,14 @@ from services.tailor import tailor_resume
 
 router = APIRouter()
 
-class Application(BaseModel):
-    resume: dict
-    job: dict
-
-
 @router.post("/process_application")
-def process_application_endpoint(data: Application):
-    
-    resume_input = data.resume
-    job_input = data.job
+async def process_application_endpoint(resume_file: UploadFile = File(...), job: str = Form(...)):
 
-    resume_data = analyze_resume(resume_input)
-    job_data = analyze_job(job_input)
+    resume_bytes = await resume_file.read()
+    resume_text = extract_text(resume_bytes)
+
+    resume_data = analyze_resume(resume_text)
+    job_data = analyze_job(job)
 
     match_data = match_resume_to_job(resume_data, job_data)
 
