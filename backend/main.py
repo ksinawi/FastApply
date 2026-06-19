@@ -1,22 +1,11 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI
 
-from services.resume_parser import extract_text
-from services.resume_analyzer import analyze_resume
-from services.llm_client import client
+from routers import resume_router
+from routers import job_router
+from routers import match_router
 
 app = FastAPI()
 
-@app.post("/upload_resume")
-async def upload_resume(file: UploadFile = File(...)):
-    file_path = f"upload/{file.filename}"
-
-    with open(file_path, "wb") as f:
-        f.write(await file.read())
-
-    resume_text = extract_text(file_path)
-
-    analysis = analyze_resume(resume_text)
-
-    return {
-        "analysis": analysis
-    }
+app.include_router(resume_router.router)
+app.include_router(job_router.router)
+app.include_router(match_router.router)

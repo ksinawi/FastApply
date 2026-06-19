@@ -2,11 +2,11 @@ from services.llm_client import client
 
 import json
 
-def analyze_resume(resume_text):
+def analyze_job(job_description):
     prompt = f"""
-    You are a resume parser.
+    You are a job analyzer.
 
-    Extract structured information from this resume.
+    Extract structured information from this job description.
 
     Do not use markdowns.
     Do not use triple backticks.
@@ -15,16 +15,16 @@ def analyze_resume(resume_text):
 
     Return this EXACT shema in JSON format:
 
-
     {{
-        "skills": [],
-        "education": [],
-        "experience": [],
-        "projects": []
+        "job_title": "",
+        "required_skills": [],
+        "preferred_skills": [],
+        "responsibilites": [],
+        "keywords": []
     }}
 
-    Resume:
-    {resume_text}
+    Job Description:
+    {job_description}
     """
 
     response = client.responses.create(
