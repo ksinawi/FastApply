@@ -6,7 +6,11 @@ def match_resume_to_job(resume, job):
     matched = list(resume_skills & job_skills)
     missing = list(job_skills - resume_skills)
 
-    score = int(len(matched) / len(missing) * 100)  
+    
+    if len(matched) == len(job_skills):
+        score = 100
+    else:
+        score = int((len(matched) / len(job_skills)) * 100)  
 
     if score > 80:
         fit = "high"

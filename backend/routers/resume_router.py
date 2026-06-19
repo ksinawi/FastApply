@@ -6,7 +6,7 @@ from services.resume_analyzer import analyze_resume
 router = APIRouter()
 
 @router.post("/upload_resume")
-async def upload_resume(file: UploadFile = File(...)):
+async def upload_resume_endpoint(file: UploadFile = File(...)):
     file_path = f"upload/{file.filename}"
 
     with open(file_path, "wb") as f:
