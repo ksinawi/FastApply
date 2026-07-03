@@ -1,34 +1,46 @@
 import { Sparkles } from "lucide-react";
 
+import { analyzeApplication } from "../../lib/api";
+import type { AnalysisResult } from "../../types/AnalysisResult"
+
 type Props = {
     uploadedFile: File | null;
-    setUploadedFile: React.Dispatch<
-        React.SetStateAction<File | null>
-    >;
     
     jobDescription: string;
-    setJobDescription: React.Dispatch<
-        React.SetStateAction<string>
-    >;
     
     isAnalyzing: boolean;
     setIsAnalyzing: React.Dispatch<
         React.SetStateAction<boolean>
     >;
+
+    analysisResult: AnalysisResult | null;
+    setAnalysisResult: React.Dispatch<
+        React.SetStateAction<AnalysisResult | null>
+    >;
 };
 
 const AnalysisButton = ({
     uploadedFile,
-    setUploadedFile,
     jobDescription,
-    setJobDescription,
     isAnalyzing,
-    setIsAnalyzing
+    setIsAnalyzing,
+    analysisResult,
+    setAnalysisResult
 }: Props) => {
 
-    const analyzeDocument = () => {
+    const analyzeDocument = async () => {
         if(!uploadedFile || !jobDescription) return;
+
         setIsAnalyzing(true);
+
+        try {
+            const result = await analyzeApplication(uploadedFile, jobDescription);
+            setAnalysisResult(result);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsAnalyzing(false);
+        }
     }
 
     const canAnalyze = !!uploadedFile && !!jobDescription.trim() && !isAnalyzing;

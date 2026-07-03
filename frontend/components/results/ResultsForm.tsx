@@ -9,8 +9,14 @@ import Recommendations from "./Recommendations";
 import TailoredResults from "./TailoredResults";
 import { Sparkles } from "lucide-react";
 
-const ResultsForm = () => {
-    const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+type Props = {
+  analysisResult: AnalysisResult | null;
+  setAnalysisResult: React.Dispatch<
+      React.SetStateAction<AnalysisResult | null>
+  >;
+};
+
+const ResultsForm = ({analysisResult, setAnalysisResult}: Props) => {
     const [copied, setCopied] = useState(false);
 
   return (

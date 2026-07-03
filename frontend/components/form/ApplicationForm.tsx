@@ -6,8 +6,16 @@ import UploadFile from "./UploadFile";
 import JobDescription from "./JobDescription";
 import AnalysisButton from "./AnalysisButton";
 
+import type { AnalysisResult } from "../../types/AnalysisResult"
 
-export default function ApplicationForm() {
+type Props = {
+    analysisResult: AnalysisResult | null;
+    setAnalysisResult: React.Dispatch<
+        React.SetStateAction<AnalysisResult | null>
+    >;
+};
+
+export default function ApplicationForm({analysisResult, setAnalysisResult}: Props) {
     const [documentType, setDocumentType] = useState<"resume" | "coverLetter">("resume");
     const [uploadedFile, setUploadedFile] = useState<File | null>(null,);
     const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -34,11 +42,11 @@ export default function ApplicationForm() {
             />
             <AnalysisButton
             uploadedFile={uploadedFile}
-            setUploadedFile={setUploadedFile}
             jobDescription={jobDescription}
-            setJobDescription={setJobDescription}
             isAnalyzing={isAnalyzing}
             setIsAnalyzing={setIsAnalyzing}
+            analysisResult={analysisResult}
+            setAnalysisResult={setAnalysisResult}
             />
         </div>
     );

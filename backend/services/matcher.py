@@ -20,8 +20,8 @@ def match_resume_to_job(resume, job):
         fit = "low"
 
     return {
-        "match-score": score,
+        "match_score": score,
         "matched_skills": matched,
-        "missin-skills": missing,
+        "missing_skills": missing,
         "fit_level": fit
     }

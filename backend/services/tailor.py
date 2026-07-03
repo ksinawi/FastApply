@@ -23,7 +23,8 @@ def tailor_resume(resume, job, match):
         "improved_bullets": [],
         "grammar_fixed": [],
         "recommendations": [],
-        "warnings: []
+        "warnings": [],
+        "tailored_resume: ""
     }}
 
     Resume: {resume}
