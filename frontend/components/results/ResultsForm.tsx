@@ -8,6 +8,7 @@ import MatchedSkills from "./MatchedSkills";
 import Recommendations from "./Recommendations";
 import TailoredResults from "./TailoredResults";
 import { Sparkles } from "lucide-react";
+import MissingSkills from "./MissingSkills";
 
 type Props = {
   analysisResult: AnalysisResult | null;
@@ -28,6 +29,10 @@ const ResultsForm = ({analysisResult, setAnalysisResult}: Props) => {
           setAnalysisResult={setAnalysisResult}
           />
           <MatchedSkills
+          analysisResult={analysisResult}
+          setAnalysisResult={setAnalysisResult}
+          />
+          <MissingSkills
           analysisResult={analysisResult}
           setAnalysisResult={setAnalysisResult}
           />

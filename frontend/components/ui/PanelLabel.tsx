@@ -1,12 +1,23 @@
-const PanelLabel = ({ children }: { children: React.ReactNode }) => {
-    return (
-      <label 
-        className="text-xs font-semibold uppercase tracking-wider block mb-2" 
-        style={{ color: "#7A7A88" }} 
-      >
-        {children}
-      </label>
-    );
-  };
+function PanelLabel({
+  children,
+  style,
+}: {
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+}) {
+  return (
+    <p
+      className="text-xs uppercase tracking-widest"
+      style={{
+        color: "var(--muted-foreground)",
+        letterSpacing: "0.12em",
+        marginBottom: "0.05rem",
+        ...style,
+      }}
+    >
+      {children}
+    </p>
+  );
+}
 
-export default PanelLabel
+export default PanelLabel;
