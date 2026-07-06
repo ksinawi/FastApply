@@ -1,7 +1,8 @@
+from schemas.match import MatchResult
 
-def match_resume_to_job(resume, job):
-    resume_skills = set(resume["skills"])
-    job_skills = set(job["required_skills"])
+def match_resume_to_job(resume, job) -> MatchResult:
+    resume_skills = set(resume.skills)
+    job_skills = set(job.skills)
 
     matched = list(resume_skills & job_skills)
     missing = list(job_skills - resume_skills)
@@ -19,9 +20,9 @@ def match_resume_to_job(resume, job):
     else:
         fit = "low"
 
-    return {
-        "match_score": score,
-        "matched_skills": matched,
-        "missing_skills": missing,
-        "fit_level": fit
-    }
+    return MatchResult(
+        match_score=score,
+        matched_skills=matched,
+        missing_keywords=missing,
+        fit_level=fit,
+    )

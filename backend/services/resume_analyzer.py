@@ -1,8 +1,9 @@
 from services.llm_client import client
+from schemas.resume import Resume
 
 import json
 
-def analyze_resume(resume_text):
+def analyze_resume(resume_text) -> Resume:
     prompt = f"""
     You are a resume parser.
 
@@ -18,9 +19,33 @@ def analyze_resume(resume_text):
 
     {{
         "skills": [],
-        "education": [],
-        "experience": [],
-        "projects": []
+        "education": [
+            {{
+                "degree": "",
+                "institution": "",
+                "relevant_courses": [],
+                "start_date": "",
+                "end_date": ""
+            }}
+        ],
+        "experience": [
+            {{
+                "title": "",
+                "company": "",
+                "start_date": "",
+                "end_date": "",
+                "responsibilities": []
+            }}
+        ],
+        "projects": [
+            {{
+                "name": "",
+                "technologies": [],
+                "start_date": "",
+                "end_date": "",
+                "description": []
+            }}
+        ]
     }}
 
     Resume:
@@ -32,4 +57,6 @@ def analyze_resume(resume_text):
         input=prompt
     )
 
-    return json.loads(response.output_text)
+    data = json.loads(response.output_text)
+
+    return Resume.model_validate(data)

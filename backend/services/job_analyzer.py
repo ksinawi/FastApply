@@ -1,8 +1,9 @@
 from services.llm_client import client
+from schemas.job import Job
 
 import json
 
-def analyze_job(job_description):
+def analyze_job(job_description) -> Job:
     prompt = f"""
     You are a job analyzer.
 
@@ -13,14 +14,27 @@ def analyze_job(job_description):
     Do not use explain anything.
     Do not write any text before or after the JSON.
 
+    Return STRICT JSON ONLY.
+
+    Skills must be atomic technical keywords.
+
+    BAD:
+    "Knowledge in Java, JavaScript, Python"
+
+    GOOD:
+    ["Java", "JavaScript", "Python"]
+
+    If unsure, extract individual technologies only.
+
     Return this EXACT shema in JSON format:
 
     {{
-        "job_title": "",
-        "required_skills": [],
-        "preferred_skills": [],
-        "responsibilites": [],
-        "keywords": []
+        "title": "",
+        "company": "",
+        "skills": [],
+        "responsibilities": [],
+        "keywords": [],
+        "qualifications": []
     }}
 
     Job Description:
@@ -32,4 +46,6 @@ def analyze_job(job_description):
         input=prompt
     )
 
-    return json.loads(response.output_text)
+    data = json.loads(response.output_text)
+
+    return Job.model_validate(data)

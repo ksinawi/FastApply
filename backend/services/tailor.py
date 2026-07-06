@@ -1,8 +1,9 @@
 from services.llm_client import client
+from schemas.tailored import TailoredResume
 
 import json
 
-def tailor_resume(resume, job, match):
+def tailor_resume(resume, job, match) -> TailoredResume:
     prompt = f"""
     Your goal is to improve the resume. 
 
@@ -23,8 +24,7 @@ def tailor_resume(resume, job, match):
         "improved_bullets": [],
         "grammar_fixed": [],
         "recommendations": [],
-        "warnings": [],
-        "tailored_resume: ""
+        "tailored_content": ""
     }}
 
     Resume: {resume}
@@ -37,4 +37,6 @@ def tailor_resume(resume, job, match):
         input=prompt
     )
 
-    return json.loads(response.output_text)
+    data = json.loads(response.output_text)
+
+    return TailoredResume.model_validate(data)
