@@ -1,4 +1,3 @@
-from services.llm_client import client
 from schemas.resume import Resume
 from utils.prompts import RESUME_ANALYZER_PROMPT
 from utils.llm import call_llm

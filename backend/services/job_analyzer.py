@@ -1,4 +1,3 @@
-from services.llm_client import client
 from schemas.job import Job
 from utils.prompts import JOB_ANALYZER_PROMPT
 from utils.llm import call_llm

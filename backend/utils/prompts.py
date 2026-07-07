@@ -129,6 +129,12 @@ Examples:
 
 Never fabricate information.
 
+The tailored_content field is REQUIRED.
+
+It must contain the entire resume.
+Never return an empty tailored_resume.
+Never return only suggestions.
+
 Return ONLY valid JSON.
 
 {{
@@ -138,9 +144,45 @@ Return ONLY valid JSON.
     "tailored_content": ""
 }}
 
-Resume:
+Original Resume:
 
-{resume}
+{original_resume}
+
+Structured Resume Analysis
+
+Your MOST IMPORTANT objective is preserving the original resume.
+
+Maintain:
+
+- the same section order
+- the same headings
+- the same bullet structure
+- the same spacing
+- the same overall layout
+
+Rewrite only the wording inside existing bullet points.
+
+Allowed changes:
+
+- Improve wording
+- Improve grammar
+- Improve ATS keywords
+- Strengthen action verbs
+- Reorder bullets inside a section
+
+Forbidden:
+
+- Changing formatting
+- Changing headings
+- Changing section order
+- Changing dates
+- Adding experience
+- Adding skills
+- Removing existing content
+
+The finished resume should look like the original resume with improved wording.
+
+{structured_resume}
 
 Job:
 

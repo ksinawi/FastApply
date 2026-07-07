@@ -21,7 +21,7 @@ async def process_application_endpoint(file: UploadFile = File(...), job_descrip
 
     match_data = match_resume_to_job(file_data, job_data)
 
-    tailor_data = tailor_resume(file_data, job_data, match_data)
+    tailor_data = tailor_resume(file_text, file_data, job_data, match_data)
 
     return {
         "resume": file_data,
