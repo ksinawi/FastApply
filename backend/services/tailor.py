@@ -1,42 +1,15 @@
 from services.llm_client import client
 from schemas.tailored import TailoredResume
-
-import json
+from utils.prompts import TAILOR_PROMPT
+from utils.llm import call_llm
 
 def tailor_resume(resume, job, match) -> TailoredResume:
-    prompt = f"""
-    Your goal is to improve the resume. 
-
-    You are NOT allowed to invent skills, tools, or experiences.
-
-    Only use information explicitly present in the resume.
-
-    If something is missing, return it as a recommendation only.
-    Never add it to resume content.
-    
-    CRITICAL RULES:
-    - Do NOT invent skills, tools, or experience.
-    - ONLY use information present in the resume.
-    - If something is missing, put it under "recommendations", NOT the resume.
-    - Do not include explanations or commentary.
-
-    {{
-        "improved_bullets": [],
-        "grammar_fixed": [],
-        "recommendations": [],
-        "tailored_content": ""
-    }}
-
-    Resume: {resume}
-    Job: {job}
-    Match: {match}
-    """
-
-    response = client.responses.create(
-        model="gpt-4.1-mini",
-        input=prompt
+    prompt = TAILOR_PROMPT.format(
+        resume=resume.model_dump_json(indent=2),
+        job=job.model_dump_json(indent=2),
+        match=match.model_dump_json(indent=2),
     )
 
-    data = json.loads(response.output_text)
+    data = call_llm(prompt)
 
     return TailoredResume.model_validate(data)
