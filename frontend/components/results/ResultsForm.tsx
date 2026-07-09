@@ -9,6 +9,7 @@ import Recommendations from "./Recommendations";
 import TailoredResults from "./TailoredResults";
 import { Sparkles } from "lucide-react";
 import MissingSkills from "./MissingSkills";
+import DownloadButton from "./DownloadButton";
 
 type Props = {
   analysisResult: AnalysisResult | null;
@@ -45,6 +46,10 @@ const ResultsForm = ({analysisResult, setAnalysisResult}: Props) => {
           setAnalysisResult={setAnalysisResult}
           copied={copied}
           setCopied={setCopied}
+          />
+          <DownloadButton
+          analysisResult={analysisResult}
+          setAnalysisResult={setAnalysisResult}
           />
         </>
       ) : (
