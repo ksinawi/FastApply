@@ -2,14 +2,43 @@ import type { AnalysisResult } from "../../types/AnalysisResult"
 
 type Props = {
     analysisResult: AnalysisResult | null;
-    setAnalysisResult: React.Dispatch<
-        React.SetStateAction<AnalysisResult | null>
-    >;
 }
 
-const DownloadButton = ({analysisResult, setAnalysisResult}: Props) => {
-    const downloadDocument = () => {
+const DownloadButton = ({analysisResult}: Props) => {
+    const downloadDocument = async () => {
         if(!analysisResult) return;
+
+        try {
+            const response = await fetch("http://localhost:8000/download", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    tailoredContent: analysisResult.tailoredContent,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Error: Failed to generate PDF");
+            }
+
+            const blob = await response.blob();
+
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "Tailored_Resume.pdf";
+
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     const canDownload = !!analysisResult;

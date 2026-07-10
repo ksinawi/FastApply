@@ -49,7 +49,6 @@ const ResultsForm = ({analysisResult, setAnalysisResult}: Props) => {
           />
           <DownloadButton
           analysisResult={analysisResult}
-          setAnalysisResult={setAnalysisResult}
           />
         </>
       ) : (
