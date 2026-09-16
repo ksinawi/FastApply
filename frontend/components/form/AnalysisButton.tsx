@@ -1,13 +1,15 @@
 import { Sparkles } from "lucide-react";
 
-import { analyzeApplication } from "../../lib/api";
+import { analyzeApplication, analyzeCoverLetter } from "../../lib/api";
 import type { AnalysisResult } from "../../types/AnalysisResult"
 
 type Props = {
+    documentType: "resume" | "coverLetter";
+
     uploadedFile: File | null;
-    
+
     jobDescription: string;
-    
+
     isAnalyzing: boolean;
     setIsAnalyzing: React.Dispatch<
         React.SetStateAction<boolean>
@@ -20,6 +22,7 @@ type Props = {
 };
 
 const AnalysisButton = ({
+    documentType,
     uploadedFile,
     jobDescription,
     isAnalyzing,
@@ -34,7 +37,9 @@ const AnalysisButton = ({
         setIsAnalyzing(true);
 
         try {
-            const result = await analyzeApplication(uploadedFile, jobDescription);
+            const result = documentType === "resume"
+                ? await analyzeApplication(uploadedFile, jobDescription)
+                : await analyzeCoverLetter(uploadedFile, jobDescription);
             setAnalysisResult(result);
         } catch (error) {
             console.error(error);

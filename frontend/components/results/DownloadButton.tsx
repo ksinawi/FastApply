@@ -8,15 +8,20 @@ const DownloadButton = ({analysisResult}: Props) => {
     const downloadDocument = async () => {
         if(!analysisResult) return;
 
+        const isResume = analysisResult.kind === "resume";
+        const endpoint = isResume ? "/download" : "/download_cover_letter";
+        const body = isResume
+            ? { resume: analysisResult.tailoredResume }
+            : { coverLetter: analysisResult.tailoredCoverLetter };
+        const filename = isResume ? "Tailored_Resume.pdf" : "Tailored_Cover_Letter.pdf";
+
         try {
-            const response = await fetch("http://localhost:8000/download", {
+            const response = await fetch(`http://localhost:8000${endpoint}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    tailoredContent: analysisResult.tailoredContent,
-                }),
+                body: JSON.stringify(body),
             });
 
             if (!response.ok) {
@@ -29,7 +34,7 @@ const DownloadButton = ({analysisResult}: Props) => {
 
             const a = document.createElement("a");
             a.href = url;
-            a.download = "Tailored_Resume.pdf";
+            a.download = filename;
 
             document.body.appendChild(a);
             a.click();

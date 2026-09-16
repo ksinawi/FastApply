@@ -115,7 +115,7 @@ const UploadFile = ({
                     Drop file here, or{" "}
                     <span style={{color: "#D4A942"}}>browse</span>
                 </p>
-                <input id="file-upload" type="file" className="hidden" accept=".pdf" onChange={handleInputChange}/>
+                <input id="file-upload" type="file" className="hidden" accept=".pdf,.docx,.txt" onChange={handleInputChange}/>
             </label>
         )}
     </Panel>

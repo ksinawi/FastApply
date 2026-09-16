@@ -1,7 +1,12 @@
 from pydantic import BaseModel
 
+from schemas.resume import Resume
+
+class TailorLLMOutput(BaseModel):
+    experience_bullets: list[list[str]] = []
+    project_bullets: list[list[str]] = []
+    recommendations: list[str] = []
+
 class TailoredResume(BaseModel):
-    improved_bullets: list[str]
-    grammar_fixed: list[str]
+    resume: Resume
     recommendations: list[str]
-    tailored_content: str

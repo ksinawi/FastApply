@@ -41,6 +41,7 @@ export default function ApplicationForm({analysisResult, setAnalysisResult}: Pro
             setJobDescription={setJobDescription}
             />
             <AnalysisButton
+            documentType={documentType}
             uploadedFile={uploadedFile}
             jobDescription={jobDescription}
             isAnalyzing={isAnalyzing}
