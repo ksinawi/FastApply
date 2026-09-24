@@ -11,7 +11,11 @@ from schemas.responses import ProcessCoverLetterResponse
 router = APIRouter()
 
 @router.post("/process_cover_letter", response_model=ProcessCoverLetterResponse)
-async def process_cover_letter_endpoint(file: UploadFile = File(...), job_description: str = Form(...)):
+async def process_cover_letter_endpoint(
+    file: UploadFile = File(...),
+    job_description: str = Form(...),
+    research_company: bool = Form(False),
+):
 
     file_bytes = await file.read()
 
@@ -25,7 +29,7 @@ async def process_cover_letter_endpoint(file: UploadFile = File(...), job_descri
 
     match_data = match_resume_to_job(cover_letter_data, job_data)
 
-    tailor_data = tailor_cover_letter(cover_letter_data, job_data, match_data)
+    tailor_data = tailor_cover_letter(cover_letter_data, job_data, match_data, include_company_research=research_company)
 
     return {
         "coverLetter": cover_letter_data,

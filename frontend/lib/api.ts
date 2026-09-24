@@ -23,12 +23,13 @@ export async function analyzeApplication(uploadedFile: File, jobDescription: str
     return { ...data, kind: "resume" };
 }
 
-export async function analyzeCoverLetter(uploadedFile: File, jobDescription: string):Promise<CoverLetterAnalysisResult> {
+export async function analyzeCoverLetter(uploadedFile: File, jobDescription: string, researchCompany: boolean):Promise<CoverLetterAnalysisResult> {
 
     const formData = new FormData();
 
     formData.append("file", uploadedFile);
     formData.append("job_description", jobDescription);
+    formData.append("research_company", String(researchCompany));
 
     const response = await fetch(`${API_URL}/process_cover_letter`, {
         method: "POST",

@@ -1,5 +1,6 @@
 from schemas.cover_letter import CoverLetter
 from schemas.tailored_cover_letter import TailoredCoverLetter, TailorCoverLetterLLMOutput
+from services.company_research import research_company
 from services.verification import call_llm_with_verification, groundedness_problems
 from utils.prompts import TAILOR_COVER_LETTER_PROMPT
 
@@ -16,10 +17,11 @@ def _merged_paragraphs(original: list[str], improved: list[str]) -> list[str]:
 
     return cleaned
 
-def _reference_text(cover_letter: CoverLetter, job) -> str:
+def _reference_text(cover_letter: CoverLetter, job, company_research: str) -> str:
     parts = [
         job.company,
         job.title,
+        company_research,
         *cover_letter.skills,
         cover_letter.opening_paragraph,
         *cover_letter.body_paragraphs,
@@ -43,13 +45,16 @@ def _verify(reference_text: str, llm_output: TailorCoverLetterLLMOutput) -> list
 
     return problems
 
-def tailor_cover_letter(cover_letter: CoverLetter, job, match) -> TailoredCoverLetter:
-    reference_text = _reference_text(cover_letter, job)
+def tailor_cover_letter(cover_letter: CoverLetter, job, match, include_company_research: bool = False) -> TailoredCoverLetter:
+    company_research = research_company(job.company, job.title) if include_company_research else ""
+
+    reference_text = _reference_text(cover_letter, job, company_research)
 
     prompt = TAILOR_COVER_LETTER_PROMPT.format(
         structured_cover_letter=cover_letter.model_dump_json(indent=2),
         job=job.model_dump_json(indent=2),
         match=match.model_dump_json(indent=2),
+        company_research=company_research or "(none)",
     )
 
     llm_output, verified = call_llm_with_verification(

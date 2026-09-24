@@ -20,6 +20,7 @@ export default function ApplicationForm({analysisResult, setAnalysisResult}: Pro
     const [uploadedFile, setUploadedFile] = useState<File | null>(null,);
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [jobDescription, setJobDescription] = useState("")
+    const [researchCompany, setResearchCompany] = useState(false)
     const [isAnalyzing, setIsAnalyzing] = useState(false)
 
     return (
@@ -39,11 +40,15 @@ export default function ApplicationForm({analysisResult, setAnalysisResult}: Pro
             <JobDescription
             jobDescription={jobDescription}
             setJobDescription={setJobDescription}
+            documentType={documentType}
+            researchCompany={researchCompany}
+            setResearchCompany={setResearchCompany}
             />
             <AnalysisButton
             documentType={documentType}
             uploadedFile={uploadedFile}
             jobDescription={jobDescription}
+            researchCompany={researchCompany}
             isAnalyzing={isAnalyzing}
             setIsAnalyzing={setIsAnalyzing}
             analysisResult={analysisResult}

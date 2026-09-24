@@ -221,6 +221,10 @@ You MAY, for each paragraph individually:
 - Make the pitch more persuasive using only what is already true.
 - Improve keyword alignment with the job posting using ONLY skills/experience already
   present in the Structured Cover Letter.
+- Reference a fact from the "Company Research" section below, if it is non-empty, to
+  personalize the opening or closing paragraph (e.g. tying the candidate's interest to
+  the company's mission or a recent announcement). If that section is empty, do not
+  mention it or make anything up in its place.
 
 If the job wants something the candidate does NOT mention, do NOT fabricate it into the
 letter. Instead, note it under recommendations as something the user could honestly add
@@ -246,4 +250,29 @@ Job:
 Match Results:
 
 {match}
+
+Company Research (optional - only use if non-empty, never invent facts beyond it):
+
+{company_research}
+"""
+
+COMPANY_RESEARCH_PROMPT = """
+You are researching a company on behalf of someone about to write a personalized cover
+letter to them.
+
+Search the web for a few genuinely useful, CURRENT facts about "{company}" that would
+help personalize a cover letter for a "{job_title}" role there - for example their
+mission or values, a recent product launch or news item, or something distinctive about
+their culture or work.
+
+Rules:
+- Only include facts you are reasonably confident are accurate and about THIS specific
+  company, not a similarly-named one.
+- If you cannot find reliable, specific information about this company, say so plainly
+  instead of guessing or generalizing.
+- Keep it to 2-4 short factual bullet points, plain text, no markdown formatting.
+- Do not invent facts.
+
+Company: {company}
+Role: {job_title}
 """

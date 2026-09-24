@@ -10,6 +10,8 @@ type Props = {
 
     jobDescription: string;
 
+    researchCompany: boolean;
+
     isAnalyzing: boolean;
     setIsAnalyzing: React.Dispatch<
         React.SetStateAction<boolean>
@@ -25,6 +27,7 @@ const AnalysisButton = ({
     documentType,
     uploadedFile,
     jobDescription,
+    researchCompany,
     isAnalyzing,
     setIsAnalyzing,
     analysisResult,
@@ -39,7 +42,7 @@ const AnalysisButton = ({
         try {
             const result = documentType === "resume"
                 ? await analyzeApplication(uploadedFile, jobDescription)
-                : await analyzeCoverLetter(uploadedFile, jobDescription);
+                : await analyzeCoverLetter(uploadedFile, jobDescription, researchCompany);
             setAnalysisResult(result);
         } catch (error) {
             console.error(error);
