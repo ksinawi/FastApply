@@ -1,8 +1,12 @@
 import type { ResumeAnalysisResult, CoverLetterAnalysisResult, AnalysisResult } from "../types/AnalysisResult";
 
-// Set NEXT_PUBLIC_API_URL to the deployed backend (e.g. https://fastapply-api.onrender.com).
-// It is inlined at build time, so redeploy the frontend after changing it.
-export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/+$/, "");
+// Backend URL. NEXT_PUBLIC_API_URL overrides it (inlined at build time, so redeploy after
+// changing it); otherwise production builds use the Render backend and dev uses localhost.
+const DEFAULT_API_URL = process.env.NODE_ENV === "production"
+    ? "https://fastapply-api.onrender.com"
+    : "http://localhost:8000";
+
+export const API_URL = (process.env.NEXT_PUBLIC_API_URL || DEFAULT_API_URL).replace(/\/+$/, "");
 
 export class ApiError extends Error {}
 
