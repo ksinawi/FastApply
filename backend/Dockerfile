@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -8,12 +9,17 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
+RUN useradd --create-home --uid 1000 appuser
+
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY . .
 
-RUN useradd --create-home --uid 1000 appuser
+# Host files/folders may be owner-only (e.g. on iCloud Desktop). Make the code
+# readable (and folders traversable) for the non-root user regardless.
+RUN chmod -R a+rX /app
+
 USER appuser
 
 EXPOSE 8000

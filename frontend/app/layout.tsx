@@ -13,7 +13,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "FastApply — Tailor your resume and cover letter to any job",
+  title: "FastApply",
   description:
     "Upload your resume or cover letter, paste a job description, and get a match score, missing keywords, and an honest AI-tailored rewrite.",
 };
