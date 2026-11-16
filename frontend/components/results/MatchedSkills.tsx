@@ -8,12 +8,9 @@ import { CheckCircle2 } from "lucide-react";
 
 type Props = {
     analysisResult: AnalysisResult | null;
-    setAnalysisResult: React.Dispatch<
-        React.SetStateAction<AnalysisResult | null>
-    >;
 };
 
-const MatchedSkills = ({ analysisResult, setAnalysisResult }: Props) => {
+const MatchedSkills = ({ analysisResult }: Props) => {
     if (!analysisResult) {
         return (
           <Panel>

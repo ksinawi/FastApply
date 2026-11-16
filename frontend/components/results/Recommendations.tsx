@@ -7,12 +7,9 @@ import { Briefcase } from "lucide-react";
 
 type Props = {
     analysisResult: AnalysisResult | null;
-    setAnalysisResult: React.Dispatch<
-        React.SetStateAction<AnalysisResult | null>
-    >;
 };
 
-const Recommendations = ({analysisResult, setAnalysisResult}: Props) => {
+const Recommendations = ({ analysisResult}: Props) => {
     if (!analysisResult) {
         return (
           <Panel>

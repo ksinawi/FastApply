@@ -1,6 +1,9 @@
 import { Sparkles } from "lucide-react";
 
+import { useState } from "react";
+
 import { analyzeApplication, analyzeCoverLetter } from "../../lib/api";
+import ErrorMessage from "../ui/ErrorMessage";
 import type { AnalysisResult } from "../../types/AnalysisResult"
 
 type Props = {
@@ -17,7 +20,6 @@ type Props = {
         React.SetStateAction<boolean>
     >;
 
-    analysisResult: AnalysisResult | null;
     setAnalysisResult: React.Dispatch<
         React.SetStateAction<AnalysisResult | null>
     >;
@@ -30,22 +32,25 @@ const AnalysisButton = ({
     researchCompany,
     isAnalyzing,
     setIsAnalyzing,
-    analysisResult,
     setAnalysisResult
 }: Props) => {
+
+    const [error, setError] = useState<string | null>(null);
 
     const analyzeDocument = async () => {
         if(!uploadedFile || !jobDescription) return;
 
         setIsAnalyzing(true);
+        setError(null);
 
         try {
             const result = documentType === "resume"
                 ? await analyzeApplication(uploadedFile, jobDescription)
                 : await analyzeCoverLetter(uploadedFile, jobDescription, researchCompany);
             setAnalysisResult(result);
-        } catch (error) {
-            console.error(error);
+        } catch (err) {
+            console.error(err);
+            setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
         } finally {
             setIsAnalyzing(false);
         }
@@ -54,6 +59,7 @@ const AnalysisButton = ({
     const canAnalyze = !!uploadedFile && !!jobDescription.trim() && !isAnalyzing;
 
   return (
+    <div className="flex flex-col gap-3">
     <button
      onClick={analyzeDocument}
      disabled={!canAnalyze}
@@ -83,6 +89,13 @@ const AnalysisButton = ({
             </>
         )}
      </button>
+     {isAnalyzing && (
+        <p className="text-xs text-center" style={{ color: "#7A7A88" }}>
+            This usually takes 20–40 seconds.
+        </p>
+     )}
+     <ErrorMessage message={error}/>
+    </div>
   )
 }
 

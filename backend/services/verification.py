@@ -1,6 +1,9 @@
+import logging
 import re
 
 from utils.llm import call_llm
+
+logger = logging.getLogger(__name__)
 
 NUMBER_PATTERN = re.compile(r"\d+(?:\.\d+)?%?")
 CAPITALIZED_WORD_PATTERN = re.compile(r"[A-Z][a-zA-Z0-9+.#/-]*")
@@ -85,20 +88,19 @@ def build_retry_prompt(base_prompt: str, problems: list[str]) -> str:
     )
 
 
-def call_llm_with_verification(base_prompt, response_model, verify, max_attempts=3):
+async def call_llm_with_verification(base_prompt, response_model, verify, max_attempts=3):
     problems: list[str] = []
     output = None
 
     for attempt in range(max_attempts):
         prompt = base_prompt if attempt == 0 else build_retry_prompt(base_prompt, problems)
 
-        data = call_llm(prompt)
-        output = response_model.model_validate(data)
+        output = await call_llm(prompt, response_model)
 
         problems = verify(output)
         if not problems:
             return output, True
 
-        print(f"[verification] attempt {attempt + 1}/{max_attempts} failed: {problems}")
+        logger.info("Verification attempt %d/%d failed: %s", attempt + 1, max_attempts, problems)
 
     return output, False

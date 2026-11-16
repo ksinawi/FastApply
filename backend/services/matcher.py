@@ -1,11 +1,15 @@
+import logging
+
 from schemas.match import MatchResult
 from utils.embeddings import cosine_similarity, get_embeddings
 
+logger = logging.getLogger(__name__)
+
 SIMILARITY_THRESHOLD = 0.65
 
-def match_resume_to_job(resume, job) -> MatchResult:
+async def match_resume_to_job(resume, job) -> MatchResult:
     resume_skills = resume.skills
-    job_skills = job.skills
+    job_skills = list(dict.fromkeys(skill.strip() for skill in job.skills if skill and skill.strip()))
 
     if not job_skills:
         return MatchResult(match_score=100, matched_skills=[], missing_keywords=[], fit_level="high")
@@ -15,7 +19,7 @@ def match_resume_to_job(resume, job) -> MatchResult:
     exact_matched = [skill for skill in job_skills if skill.lower() in resume_lookup]
     unmatched = [skill for skill in job_skills if skill.lower() not in resume_lookup]
 
-    soft_matched, missing = _semantic_match(resume_skills, unmatched)
+    soft_matched, missing = await _semantic_match(resume_skills, unmatched)
 
     matched = exact_matched + soft_matched
     score = round(len(matched) / len(job_skills) * 100)
@@ -34,14 +38,14 @@ def match_resume_to_job(resume, job) -> MatchResult:
         fit_level=fit,
     )
 
-def _semantic_match(resume_skills: list[str], job_skills: list[str]) -> tuple[list[str], list[str]]:
+async def _semantic_match(resume_skills: list[str], job_skills: list[str]) -> tuple[list[str], list[str]]:
     if not job_skills or not resume_skills:
         return [], job_skills
 
     try:
-        vectors = get_embeddings(resume_skills + job_skills)
+        vectors = await get_embeddings(resume_skills + job_skills)
     except Exception as error:
-        print(f"[matcher] semantic matching unavailable, falling back to exact matches only: {error}")
+        logger.warning("Semantic matching unavailable, using exact matches only: %s", error)
         return [], job_skills
 
     resume_vectors = vectors[:len(resume_skills)]

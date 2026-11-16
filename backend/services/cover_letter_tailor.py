@@ -1,8 +1,12 @@
+import logging
+
 from schemas.cover_letter import CoverLetter
 from schemas.tailored_cover_letter import TailoredCoverLetter, TailorCoverLetterLLMOutput
 from services.company_research import research_company
 from services.verification import call_llm_with_verification, groundedness_problems
 from utils.prompts import TAILOR_COVER_LETTER_PROMPT
+
+logger = logging.getLogger(__name__)
 
 MAX_VERIFICATION_ATTEMPTS = 3
 
@@ -45,8 +49,8 @@ def _verify(reference_text: str, llm_output: TailorCoverLetterLLMOutput) -> list
 
     return problems
 
-def tailor_cover_letter(cover_letter: CoverLetter, job, match, include_company_research: bool = False) -> TailoredCoverLetter:
-    company_research = research_company(job.company, job.title) if include_company_research else ""
+async def tailor_cover_letter(cover_letter: CoverLetter, job, match, include_company_research: bool = False) -> TailoredCoverLetter:
+    company_research = await research_company(job.company, job.title) if include_company_research else ""
 
     reference_text = _reference_text(cover_letter, job, company_research)
 
@@ -57,7 +61,7 @@ def tailor_cover_letter(cover_letter: CoverLetter, job, match, include_company_r
         company_research=company_research or "(none)",
     )
 
-    llm_output, verified = call_llm_with_verification(
+    llm_output, verified = await call_llm_with_verification(
         base_prompt=prompt,
         response_model=TailorCoverLetterLLMOutput,
         verify=lambda output: _verify(reference_text, output),
@@ -65,7 +69,7 @@ def tailor_cover_letter(cover_letter: CoverLetter, job, match, include_company_r
     )
 
     if not verified:
-        print("[tailor_cover_letter] giving up after failed verification, keeping original paragraphs")
+        logger.warning("giving up after failed verification, keeping original paragraphs")
         llm_output = TailorCoverLetterLLMOutput(recommendations=llm_output.recommendations)
 
     tailored = cover_letter.model_copy(deep=True)

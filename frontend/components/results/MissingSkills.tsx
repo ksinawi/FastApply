@@ -7,12 +7,9 @@ import { AlertCircle } from "lucide-react";
 
 type Props = {
     analysisResult: AnalysisResult | null;
-    setAnalysisResult: React.Dispatch<
-        React.SetStateAction<AnalysisResult | null>
-    >;
 };
 
-const MissingSkills = ({ analysisResult, setAnalysisResult }: Props) => {
+const MissingSkills = ({ analysisResult }: Props) => {
     if (!analysisResult) {
         return (
           <Panel>

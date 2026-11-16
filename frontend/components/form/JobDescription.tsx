@@ -32,13 +32,14 @@ const JobDescription = ({
          placeholder="We are looking for a Senior Software Engineer with 5+ years experience in Python..."
          className="w-full resize-none text-sm outline-none transition-colors duration-150"
          rows={8}
+         maxLength={20000}
          style={{
             background: "#1C1C21",
             border: "1px solid rgba(255, 255, 255, 0.07)",
             borderRadius: "0.25rem",
             padding: "0.875rem 1rem",
             color: "#EEE9DF",
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "var(--font-dm-sans), sans-serif",
             lineHeight: 1.65
          }}
          onFocus={(e) => {

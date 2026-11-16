@@ -9,13 +9,12 @@ import AnalysisButton from "./AnalysisButton";
 import type { AnalysisResult } from "../../types/AnalysisResult"
 
 type Props = {
-    analysisResult: AnalysisResult | null;
     setAnalysisResult: React.Dispatch<
         React.SetStateAction<AnalysisResult | null>
     >;
 };
 
-export default function ApplicationForm({analysisResult, setAnalysisResult}: Props) {
+export default function ApplicationForm({setAnalysisResult}: Props) {
     const [documentType, setDocumentType] = useState<"resume" | "coverLetter">("resume");
     const [uploadedFile, setUploadedFile] = useState<File | null>(null,);
     const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -31,7 +30,6 @@ export default function ApplicationForm({analysisResult, setAnalysisResult}: Pro
             />
             <UploadFile
             documentType={documentType}
-            setDocumentType={setDocumentType}
             uploadedFile={uploadedFile}
             setUploadedFile={setUploadedFile}
             isDragging={isDragging}
@@ -51,7 +49,6 @@ export default function ApplicationForm({analysisResult, setAnalysisResult}: Pro
             researchCompany={researchCompany}
             isAnalyzing={isAnalyzing}
             setIsAnalyzing={setIsAnalyzing}
-            analysisResult={analysisResult}
             setAnalysisResult={setAnalysisResult}
             />
         </div>

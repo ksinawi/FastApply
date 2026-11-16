@@ -3,7 +3,7 @@ const Container = ({ children }: { children: React.ReactNode }) => {
         <div className="min-h-screen"
         style={{
           background: "#0C0C0F",
-          fontFamily: "'DM Sans', sans-serif",
+          fontFamily: "var(--font-dm-sans), sans-serif",
         }}>
             {children}
         </div>

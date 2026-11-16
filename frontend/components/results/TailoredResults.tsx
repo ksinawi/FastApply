@@ -9,9 +9,6 @@ import { Check, Copy, Sparkles } from "lucide-react";
 
 type Props = {
     analysisResult: AnalysisResult | null;
-    setAnalysisResult: React.Dispatch<
-        React.SetStateAction<AnalysisResult | null>
-    >;
 
     copied: boolean;
     setCopied: React.Dispatch<
@@ -185,7 +182,7 @@ const CoverLetterPreview = ({ coverLetter }: { coverLetter: CoverLetter }) => (
     </>
 );
 
-const TailoredResults = ({analysisResult, setAnalysisResult, copied, setCopied}: Props) => {
+const TailoredResults = ({ analysisResult, copied, setCopied}: Props) => {
     if (!analysisResult) {
         return (
           <Panel>
@@ -199,9 +196,10 @@ const TailoredResults = ({analysisResult, setAnalysisResult, copied, setCopied}:
             ? resumeToPlainText(analysisResult.tailoredResume)
             : coverLetterToPlainText(analysisResult.tailoredCoverLetter);
 
-        navigator.clipboard.writeText(text);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        navigator.clipboard.writeText(text).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }).catch((err) => console.error("Copy failed", err));
     };
 
     return (

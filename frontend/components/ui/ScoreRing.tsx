@@ -47,7 +47,7 @@ function ScoreRing({score}: {score: number}) {
         <span
           className="text-3xl font-bold"
           style={{
-            fontFamily: "'Playfair Display', serif",
+            fontFamily: "var(--font-playfair), serif",
             color,
           }}
         >

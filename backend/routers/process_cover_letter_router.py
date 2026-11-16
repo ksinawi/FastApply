@@ -1,43 +1,39 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+import asyncio
 
-from services.document_parser import extract_text
+from fastapi import APIRouter, Depends, File, Form, UploadFile
+
+from core.rate_limit import limit_analysis
+from routers.uploads import read_document, validate_job_description
+from schemas.responses import ProcessCoverLetterResponse
 from services.cover_letter_analyzer import analyze_cover_letter
+from services.cover_letter_tailor import tailor_cover_letter
 from services.job_analyzer import analyze_job
 from services.matcher import match_resume_to_job
-from services.cover_letter_tailor import tailor_cover_letter
-
-from schemas.responses import ProcessCoverLetterResponse
 
 router = APIRouter()
 
-@router.post("/process_cover_letter", response_model=ProcessCoverLetterResponse)
+
+@router.post("/process_cover_letter", response_model=ProcessCoverLetterResponse, dependencies=[Depends(limit_analysis)])
 async def process_cover_letter_endpoint(
     file: UploadFile = File(...),
     job_description: str = Form(...),
     research_company: bool = Form(False),
 ):
+    job_description = validate_job_description(job_description)
+    file_text = await read_document(file)
 
-    file_bytes = await file.read()
+    cover_letter, job = await asyncio.gather(analyze_cover_letter(file_text), analyze_job(job_description))
 
-    try:
-        file_text = extract_text(file.filename, file_bytes)
-    except ValueError as error:
-        raise HTTPException(status_code=400, detail=str(error))
-
-    cover_letter_data = analyze_cover_letter(file_text)
-    job_data = analyze_job(job_description)
-
-    match_data = match_resume_to_job(cover_letter_data, job_data)
-
-    tailor_data = tailor_cover_letter(cover_letter_data, job_data, match_data, include_company_research=research_company)
+    match = await match_resume_to_job(cover_letter, job)
+    tailored = await tailor_cover_letter(cover_letter, job, match, include_company_research=research_company)
 
     return {
-        "coverLetter": cover_letter_data,
-        "job": job_data,
-        "match": match_data,
-        "matchedSkills": match_data.matched_skills,
-        "missingKeywords": match_data.missing_keywords,
-        "matchScore": match_data.match_score,
-        "recommendations": tailor_data.recommendations,
-        "tailoredCoverLetter": tailor_data.cover_letter
+        "coverLetter": cover_letter,
+        "job": job,
+        "match": match,
+        "matchedSkills": match.matched_skills,
+        "missingKeywords": match.missing_keywords,
+        "matchScore": match.match_score,
+        "recommendations": tailored.recommendations,
+        "tailoredCoverLetter": tailored.cover_letter,
     }

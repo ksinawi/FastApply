@@ -1,0 +1,24 @@
+# Run the whole app locally:   docker compose up --build
+# Frontend: http://localhost:3000   Backend: http://localhost:8000/docs
+services:
+  backend:
+    build: ./backend
+    env_file: ./backend/.env
+    environment:
+      ALLOWED_ORIGINS: http://localhost:3000
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # The browser calls the API directly, so this is the host-facing URL.
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped

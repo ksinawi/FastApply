@@ -5,12 +5,9 @@ import type { AnalysisResult } from "../../types/AnalysisResult"
 
 type Props = {
     analysisResult: AnalysisResult | null;
-    setAnalysisResult: React.Dispatch<
-        React.SetStateAction<AnalysisResult | null>
-    >;
 };
 
-const Score = ({ analysisResult, setAnalysisResult }: Props) => {
+const Score = ({ analysisResult }: Props) => {
     if (!analysisResult) {
       return (
         <Panel>

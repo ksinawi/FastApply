@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Response
+from fastapi.concurrency import run_in_threadpool
 
 from services.pdf_generator import generate_resume_pdf
 from services.cover_letter_pdf_generator import generate_cover_letter_pdf
@@ -8,7 +9,7 @@ router = APIRouter()
 
 @router.post("/download")
 async def download_endpoint(data: DownloadRequest):
-    pdf = generate_resume_pdf(data.resume)
+    pdf = await run_in_threadpool(generate_resume_pdf, data.resume)
 
     return Response(
         content=pdf,
@@ -20,7 +21,7 @@ async def download_endpoint(data: DownloadRequest):
 
 @router.post("/download_cover_letter")
 async def download_cover_letter_endpoint(data: DownloadCoverLetterRequest):
-    pdf = generate_cover_letter_pdf(data.coverLetter)
+    pdf = await run_in_threadpool(generate_cover_letter_pdf, data.coverLetter)
 
     return Response(
         content=pdf,

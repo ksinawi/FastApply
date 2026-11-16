@@ -1,10 +1,10 @@
-from dotenv import load_dotenv
-from openai import OpenAI
+from functools import lru_cache
 
-import os
+from openai import AsyncOpenAI
 
-load_dotenv()
+from core.config import settings
 
-client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY")
-)
+
+@lru_cache(maxsize=1)
+def get_client() -> AsyncOpenAI:
+    return AsyncOpenAI(api_key=settings.openai_api_key, timeout=settings.llm_timeout_seconds, max_retries=2)

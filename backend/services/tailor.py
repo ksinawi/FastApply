@@ -1,7 +1,11 @@
+import logging
+
 from schemas.resume import Resume
 from schemas.tailored import TailoredResume, TailorLLMOutput
 from services.verification import call_llm_with_verification, groundedness_problems
 from utils.prompts import TAILOR_PROMPT
+
+logger = logging.getLogger(__name__)
 
 MAX_VERIFICATION_ATTEMPTS = 3
 
@@ -42,7 +46,7 @@ def _verify(reference_text: str, llm_output: TailorLLMOutput) -> list[str]:
 
     return problems
 
-def tailor_resume(resume: Resume, job, match) -> TailoredResume:
+async def tailor_resume(resume: Resume, job, match) -> TailoredResume:
     reference_text = _reference_text(resume)
 
     prompt = TAILOR_PROMPT.format(
@@ -51,7 +55,7 @@ def tailor_resume(resume: Resume, job, match) -> TailoredResume:
         match=match.model_dump_json(indent=2),
     )
 
-    llm_output, verified = call_llm_with_verification(
+    llm_output, verified = await call_llm_with_verification(
         base_prompt=prompt,
         response_model=TailorLLMOutput,
         verify=lambda output: _verify(reference_text, output),
@@ -59,7 +63,7 @@ def tailor_resume(resume: Resume, job, match) -> TailoredResume:
     )
 
     if not verified:
-        print("[tailor_resume] giving up after failed verification, keeping original bullets")
+        logger.warning("giving up after failed verification, keeping original bullets")
         llm_output = TailorLLMOutput(recommendations=llm_output.recommendations)
 
     tailored = resume.model_copy(deep=True)

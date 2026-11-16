@@ -13,12 +13,9 @@ import DownloadButton from "./DownloadButton";
 
 type Props = {
   analysisResult: AnalysisResult | null;
-  setAnalysisResult: React.Dispatch<
-      React.SetStateAction<AnalysisResult | null>
-  >;
 };
 
-const ResultsForm = ({analysisResult, setAnalysisResult}: Props) => {
+const ResultsForm = ({analysisResult}: Props) => {
     const [copied, setCopied] = useState(false);
 
   return (
@@ -27,23 +24,18 @@ const ResultsForm = ({analysisResult, setAnalysisResult}: Props) => {
         <>
           <Score
           analysisResult={analysisResult}
-          setAnalysisResult={setAnalysisResult}
           />
           <MatchedSkills
           analysisResult={analysisResult}
-          setAnalysisResult={setAnalysisResult}
           />
           <MissingSkills
           analysisResult={analysisResult}
-          setAnalysisResult={setAnalysisResult}
           />
           <Recommendations
           analysisResult={analysisResult}
-          setAnalysisResult={setAnalysisResult}
           />
           <TailoredResults
           analysisResult={analysisResult}
-          setAnalysisResult={setAnalysisResult}
           copied={copied}
           setCopied={setCopied}
           />
@@ -56,7 +48,7 @@ const ResultsForm = ({analysisResult, setAnalysisResult}: Props) => {
           <div className="flex items-center justify-center size-14 mb-5" style={{background: "#1C1C21", borderRadius: "50%"}}>
             <Sparkles size={22} color="#7A7A88"/>
           </div>
-          <p className="text-lg mb-2" style={{fontFamily: "'Playfair Display', serif", color: "#EEE9DF"}}>
+          <p className="text-lg mb-2" style={{fontFamily: "var(--font-playfair), serif", color: "#EEE9DF"}}>
             Analysis Will Appear Here
           </p>
           <p className="text-sm max-w-xs" style={{color: "#7A7A88", lineHeight: 1.7}}>

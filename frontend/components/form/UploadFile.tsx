@@ -2,14 +2,14 @@ import { FileText, Upload, X } from "lucide-react";
 
 import Panel from "../ui/Panel";
 import PanelLabel from "../ui/PanelLabel";
-import React, { useCallback } from "react";
+import React, { useState } from "react";
+import ErrorMessage from "../ui/ErrorMessage";
+
+const MAX_FILE_MB = 5;
+const ACCEPTED = ["pdf", "docx", "txt"];
 
 type Props = {
     documentType: "resume" | "coverLetter";
-    setDocumentType: React.Dispatch<
-        React.SetStateAction<"resume" | "coverLetter">
-    >;
-
     uploadedFile: File | null;
     setUploadedFile: React.Dispatch<
         React.SetStateAction<File | null>
@@ -23,15 +23,28 @@ type Props = {
 
 const UploadFile = ({
     documentType,
-    setDocumentType,
     uploadedFile,
     setUploadedFile,
     isDragging,
     setIsDragging,
 }: Props) => {
 
+    const [fileError, setFileError] = useState<string | null>(null);
+
     const handleFileUpload = (file: File | null) => {
         if (!file) return;
+
+        const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+        if (!ACCEPTED.includes(extension)) {
+            setFileError("Please upload a PDF, DOCX, or TXT file.");
+            return;
+        }
+        if (file.size > MAX_FILE_MB * 1024 * 1024) {
+            setFileError(`That file is too large. The limit is ${MAX_FILE_MB} MB.`);
+            return;
+        }
+
+        setFileError(null);
         setUploadedFile(file);
     }
 
@@ -40,12 +53,12 @@ const UploadFile = ({
         handleFileUpload(file || null);
     }
 
-    const handleDrop = useCallback((e: React.DragEvent) => {
+    const handleDrop = (e: React.DragEvent) => {
         e.preventDefault();
         setIsDragging(false);
         const file = e.dataTransfer.files?.[0];
         handleFileUpload(file || null);
-    }, []);
+    };
 
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
@@ -88,7 +101,7 @@ const UploadFile = ({
                         </p>
                     </div>
                 </div>
-                <button onClick={() => setUploadedFile(null)} className="flex items-center justify-center size-6 transition-opacity hover:opacity-70" style={{color: "#7A7A88"}}>
+                <button type="button" aria-label="Remove file" onClick={() => setUploadedFile(null)} className="flex items-center justify-center size-6 transition-opacity hover:opacity-70" style={{color: "#7A7A88"}}>
                     <X size={14}/>
                 </button>
             </div>
@@ -118,6 +131,7 @@ const UploadFile = ({
                 <input id="file-upload" type="file" className="hidden" accept=".pdf,.docx,.txt" onChange={handleInputChange}/>
             </label>
         )}
+        {fileError && <div className="mt-3"><ErrorMessage message={fileError}/></div>}
     </Panel>
     )
 }

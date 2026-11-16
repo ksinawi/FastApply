@@ -14,17 +14,13 @@ const Page = () => {
   return (
     <Container>
       <Header/>
-      <main className="max-w-7xl mx-auto px-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
         <Hero/>
-        <div className="grid gap-8" style={{ gridTemplateColumns: "1fr 1fr" }}>
+        <div className="grid gap-8 grid-cols-1 lg:grid-cols-2">
           <ApplicationForm
-          analysisResult={analysisResult}
           setAnalysisResult={setAnalysisResult}
           />
-          <ResultsForm
-          analysisResult={analysisResult}
-          setAnalysisResult={setAnalysisResult}
-          />
+          <ResultsForm analysisResult={analysisResult}/>
         </div>
       </main>
     </Container>
