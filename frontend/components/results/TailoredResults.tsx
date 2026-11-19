@@ -2,7 +2,7 @@ import Panel from "../ui/Panel";
 import PanelLabel from "../ui/PanelLabel";
 
 import type { AnalysisResult } from "../../types/AnalysisResult";
-import type { Resume } from "../../types/Resume";
+import type { Resume, SkillGroup } from "../../types/Resume";
 import type { CoverLetter } from "../../types/CoverLetter";
 import { Check, Copy, Sparkles } from "lucide-react";
 
@@ -23,6 +23,12 @@ const contactLine = (contact: Resume["contact_info"] | CoverLetter["contact_info
         .filter(Boolean)
         .join(" · ");
 
+const skillGroups = (resume: Resume): SkillGroup[] => {
+    const groups = (resume.skill_groups ?? []).filter((g) => g.category?.trim() && g.skills?.length);
+    if (groups.length) return groups;
+    return resume.skills?.length ? [{ category: "Skills", skills: resume.skills }] : [];
+};
+
 const resumeToPlainText = (resume: Resume): string => {
     const lines: string[] = [];
     const { contact_info } = resume;
@@ -30,8 +36,10 @@ const resumeToPlainText = (resume: Resume): string => {
     if (contact_info?.name) lines.push(contact_info.name);
     if (contactLine(contact_info)) lines.push(contactLine(contact_info).replaceAll(" · ", " | "));
 
-    if (resume.skills?.length) {
-        lines.push("", "SKILLS", resume.skills.join(", "));
+    const groups = skillGroups(resume);
+    if (groups.length) {
+        lines.push("", "TECHNICAL SKILLS");
+        groups.forEach((g) => lines.push(`${g.category}: ${g.skills.join(", ")}`));
     }
 
     if (resume.experience?.length) {
@@ -87,10 +95,16 @@ const ResumePreview = ({ resume }: { resume: Resume }) => (
             </div>
         )}
 
-        {resume.skills?.length > 0 && (
+        {skillGroups(resume).length > 0 && (
             <div>
                 <PanelLabel>Skills</PanelLabel>
-                <p className="text-xs leading-relaxed" style={{color: "#EEE9DF"}}>{resume.skills.join(", ")}</p>
+                <div className="flex flex-col gap-1">
+                    {skillGroups(resume).map((group) => (
+                        <p key={group.category} className="text-xs leading-relaxed" style={{color: "#EEE9DF"}}>
+                            <span style={{color: "#7A7A88"}}>{group.category}:</span> {group.skills.join(", ")}
+                        </p>
+                    ))}
+                </div>
             </div>
         )}
 

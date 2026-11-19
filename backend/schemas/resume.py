@@ -28,9 +28,14 @@ class Project(BaseModel):
     end_date: str
     description: list[str]
 
+class SkillGroup(BaseModel):
+    category: str
+    skills: list[str]
+
 class Resume(BaseModel):
     contact_info: ContactInfo
     skills: list[str]
+    skill_groups: list[SkillGroup] = []
     education: list[Education]
     experience: list[Experience]
     projects: list[Project]

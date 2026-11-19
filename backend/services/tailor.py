@@ -17,6 +17,18 @@ def _merged_bullets(original: list[str], improved: list[str]) -> list[str]:
 
     return cleaned
 
+def _prioritize_skills(resume: Resume, matched_skills: list[str]) -> None:
+    """Reorder skills so the ones the job asks for come first (stable otherwise)."""
+    relevant = {skill.strip().lower() for skill in matched_skills}
+
+    def ordered(skills: list[str]) -> list[str]:
+        return sorted(skills, key=lambda skill: skill.strip().lower() not in relevant)
+
+    resume.skills = ordered(resume.skills)
+    for group in resume.skill_groups:
+        group.skills = ordered(group.skills)
+
+
 def _reference_text(resume: Resume) -> str:
     parts = list(resume.skills)
 
@@ -73,5 +85,7 @@ async def tailor_resume(resume: Resume, job, match) -> TailoredResume:
 
     for project, bullets in zip(tailored.projects, llm_output.project_bullets):
         project.description = _merged_bullets(project.description, bullets)
+
+    _prioritize_skills(tailored, getattr(match, "matched_skills", []) or [])
 
     return TailoredResume(resume=tailored, recommendations=llm_output.recommendations)

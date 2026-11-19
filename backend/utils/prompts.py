@@ -14,6 +14,11 @@ Rules:
 - If a field or date is unknown, return an empty string.
 - Extract ALL skills that appear anywhere in the resume.
 - Extract the candidate's name, email, phone, location, and any links (LinkedIn, GitHub, portfolio, personal site) from the resume header.
+- Also organize the skills into "skill_groups":
+  - If the resume already groups skills under headings (e.g. "Languages:", "Frameworks:"), reproduce those groups and their order exactly.
+  - Otherwise, group them into 2-5 short, conventional categories, in this order where applicable:
+    "Languages", "Frameworks & Libraries", "Databases", "Cloud & DevOps", "AI/ML", "Tools".
+  - Every skill in "skills" must appear in exactly one group. Do not add skills that are not in the resume.
 
 Return this exact JSON schema:
 
@@ -26,6 +31,12 @@ Return this exact JSON schema:
         "links": []
     }},
     "skills": [],
+    "skill_groups": [
+        {{
+            "category": "",
+            "skills": []
+        }}
+    ],
     "education": [
         {{
             "degree": "",

@@ -30,9 +30,15 @@ export type Project = {
   description: string[];
 };
 
+export type SkillGroup = {
+  category: string;
+  skills: string[];
+};
+
 export type Resume = {
   contact_info: ContactInfo;
   skills: string[];
+  skill_groups?: SkillGroup[];
   education: Education[];
   experience: Experience[];
   projects: Project[];
